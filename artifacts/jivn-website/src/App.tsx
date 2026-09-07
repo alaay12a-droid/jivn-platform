@@ -164,9 +164,9 @@ function PublicSite() {
   const [dialog, setDialog] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [adminUnlockOpen, setAdminUnlockOpen] = useState(false);
-  const site = useGetPublicSite();
-  const pricing = useGetPublicPricing();
-  const restaurants = useGetPublicRestaurants();
+  const site = useGetPublicSite({ request: { responseType: 'json' } });
+  const pricing = useGetPublicPricing({ request: { responseType: 'json' } });
+  const restaurants = useGetPublicRestaurants({ request: { responseType: 'json' } });
   const content = site.data?.content ?? fallbackContent;
   const features = site.data?.features?.filter(f => f.active).sort((a, b) => a.sortOrder - b.sortOrder) ?? [];
   const plans = pricing.data ?? [];
