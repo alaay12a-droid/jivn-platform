@@ -5,16 +5,9 @@ import { defineConfig } from 'vite';
 
 import runtimeErrorOverlay from '@replit/vite-plugin-runtime-error-modal';
 
-const basePath = process.env.BASE_PATH;
-
-if (!basePath) {
-  throw new Error(
-    'BASE_PATH environment variable is required but was not provided.',
-  );
-}
-
 export default defineConfig(async ({ command }) => {
   const rawPort = process.env.PORT;
+  const rawBasePath = process.env.BASE_PATH;
   let port: number | undefined;
 
   if (command === 'serve') {
@@ -29,10 +22,16 @@ export default defineConfig(async ({ command }) => {
     if (Number.isNaN(port) || port <= 0) {
       throw new Error(`Invalid PORT value: "${rawPort}"`);
     }
+
+    if (!rawBasePath) {
+      throw new Error(
+        'BASE_PATH environment variable is required but was not provided.',
+      );
+    }
   }
 
   return {
-    base: basePath,
+    base: rawBasePath ?? '/',
     plugins: [
       react(),
       tailwindcss(),
