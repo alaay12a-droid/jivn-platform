@@ -1,0 +1,929 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: Public and admin API for the Jivn restaurant app platform
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: public
+    description: Public website data
+  - name: admin
+    description: Protected dashboard operations
+  - name: leads
+    description: Customer enquiries
+  - name: storage
+    description: Logo asset uploads
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+  /public/site:
+    get:
+      operationId: getPublicSite
+      tags: [public]
+      summary: Get published website content
+      responses:
+        "200":
+          description: Website content and settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PublicSite"
+  /public/pricing:
+    get:
+      operationId: getPublicPricing
+      tags: [public]
+      summary: Get active pricing plans
+      responses:
+        "200":
+          description: Active plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PricingPlan"
+  /public/restaurants:
+    get:
+      operationId: getPublicRestaurants
+      tags: [public]
+      summary: Get active restaurant logos
+      responses:
+        "200":
+          description: Active restaurants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RestaurantLogo"
+  /leads:
+    post:
+      operationId: createLead
+      tags: [leads]
+      summary: Submit a customer enquiry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeadInput"
+      responses:
+        "201":
+          description: Saved enquiry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lead"
+        "400":
+          description: Invalid enquiry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+  /admin/unlock:
+    post:
+      operationId: unlockAdmin
+      tags: [admin]
+      summary: Unlock the private admin area
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AdminUnlockInput"
+      responses:
+        "200":
+          description: Admin area unlocked
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAccessStatus"
+        "401":
+          description: Invalid unlock code
+    delete:
+      operationId: lockAdmin
+      tags: [admin]
+      summary: Lock the private admin area
+      responses:
+        "204":
+          description: Admin area locked
+  /admin/access:
+    get:
+      operationId: getAdminAccess
+      tags: [admin]
+      summary: Check private admin unlock status
+      responses:
+        "200":
+          description: Admin access status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAccessStatus"
+  /admin/overview:
+    get:
+      operationId: getAdminOverview
+      tags: [admin]
+      summary: Get dashboard summary
+      security:
+        - clerkSession: []
+      responses:
+        "200":
+          description: Lead pipeline summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminOverview"
+  /admin/content:
+    get:
+      operationId: getAdminContent
+      tags: [admin]
+      summary: Get editable website content
+      security:
+        - clerkSession: []
+      responses:
+        "200":
+          description: Editable content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteContent"
+    patch:
+      operationId: updateAdminContent
+      tags: [admin]
+      summary: Update editable website content
+      security:
+        - clerkSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SiteContentUpdate"
+      responses:
+        "200":
+          description: Updated content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteContent"
+  /admin/contact:
+    get:
+      operationId: getAdminContact
+      tags: [admin]
+      summary: Get contact settings
+      security:
+        - clerkSession: []
+      responses:
+        "200":
+          description: Contact settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactSettings"
+    patch:
+      operationId: updateAdminContact
+      tags: [admin]
+      summary: Update contact settings
+      security:
+        - clerkSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContactSettingsUpdate"
+      responses:
+        "200":
+          description: Updated contact settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContactSettings"
+  /admin/order-counter:
+    get:
+      operationId: getAdminOrderCounter
+      tags: [admin]
+      summary: Get marketing order counter settings
+      security:
+        - clerkSession: []
+      responses:
+        "200":
+          description: Marketing counter settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MarketingOrderCounter"
+    patch:
+      operationId: updateAdminOrderCounter
+      tags: [admin]
+      summary: Update marketing order counter settings
+      security:
+        - clerkSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarketingOrderCounterUpdate"
+      responses:
+        "200":
+          description: Updated marketing counter settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MarketingOrderCounter"
+  /admin/notifications:
+    get:
+      operationId: getAdminNotifications
+      tags: [admin]
+      summary: List website notifications
+      security:
+        - clerkSession: []
+      responses:
+        "200":
+          description: Website notifications
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+    post:
+      operationId: createAdminNotification
+      tags: [admin]
+      summary: Create a website notification
+      security:
+        - clerkSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotificationInput"
+      responses:
+        "201":
+          description: Created notification
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notification"
+  /admin/notifications/{id}:
+    patch:
+      operationId: updateAdminNotification
+      tags: [admin]
+      summary: Update a website notification
+      security:
+        - clerkSession: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotificationUpdate"
+      responses:
+        "200":
+          description: Updated notification
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Notification"
+    delete:
+      operationId: deleteAdminNotification
+      tags: [admin]
+      summary: Delete a website notification
+      security:
+        - clerkSession: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Notification deleted
+  /admin/media:
+    get:
+      operationId: getAdminMedia
+      tags: [admin]
+      summary: List website media
+      security:
+        - clerkSession: []
+      responses:
+        "200":
+          description: Website media
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SiteMedia"
+    post:
+      operationId: createAdminMedia
+      tags: [admin]
+      summary: Create website media
+      security:
+        - clerkSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SiteMediaInput"
+      responses:
+        "201":
+          description: Created media
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteMedia"
+  /admin/media/{id}:
+    patch:
+      operationId: updateAdminMedia
+      tags: [admin]
+      summary: Update website media
+      security:
+        - clerkSession: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SiteMediaUpdate"
+      responses:
+        "200":
+          description: Updated media
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteMedia"
+    delete:
+      operationId: deleteAdminMedia
+      tags: [admin]
+      summary: Delete website media
+      security:
+        - clerkSession: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Media deleted
+  /admin/plans:
+    get:
+      operationId: getAdminPlans
+      tags: [admin]
+      summary: List all pricing plans
+      security:
+        - clerkSession: []
+      responses:
+        "200":
+          description: Pricing plans
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PricingPlan"
+    post:
+      operationId: createAdminPlan
+      tags: [admin]
+      summary: Create a pricing plan
+      security:
+        - clerkSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PricingPlanInput"
+      responses:
+        "201":
+          description: Created plan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PricingPlan"
+  /admin/plans/{id}:
+    patch:
+      operationId: updateAdminPlan
+      tags: [admin]
+      summary: Update a pricing plan
+      security:
+        - clerkSession: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PricingPlanUpdate"
+      responses:
+        "200":
+          description: Updated plan
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PricingPlan"
+    delete:
+      operationId: deleteAdminPlan
+      tags: [admin]
+      summary: Delete a pricing plan
+      security:
+        - clerkSession: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Plan deleted
+  /admin/restaurants:
+    get:
+      operationId: getAdminRestaurants
+      tags: [admin]
+      summary: List all restaurant logos
+      security:
+        - clerkSession: []
+      responses:
+        "200":
+          description: Restaurant logos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RestaurantLogo"
+    post:
+      operationId: createAdminRestaurant
+      tags: [admin]
+      summary: Add a restaurant logo
+      security:
+        - clerkSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RestaurantLogoInput"
+      responses:
+        "201":
+          description: Created restaurant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RestaurantLogo"
+  /admin/restaurants/{id}:
+    patch:
+      operationId: updateAdminRestaurant
+      tags: [admin]
+      summary: Update a restaurant logo
+      security:
+        - clerkSession: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RestaurantLogoUpdate"
+      responses:
+        "200":
+          description: Updated restaurant
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RestaurantLogo"
+    delete:
+      operationId: deleteAdminRestaurant
+      tags: [admin]
+      summary: Delete a restaurant logo
+      security:
+        - clerkSession: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Restaurant deleted
+  /admin/leads:
+    get:
+      operationId: getAdminLeads
+      tags: [admin]
+      summary: List customer enquiries
+      security:
+        - clerkSession: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: "#/components/schemas/LeadStatus"
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Customer enquiries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Lead"
+  /admin/leads/{id}:
+    patch:
+      operationId: updateAdminLead
+      tags: [admin]
+      summary: Update lead status
+      security:
+        - clerkSession: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LeadUpdate"
+      responses:
+        "200":
+          description: Updated lead
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lead"
+    delete:
+      operationId: deleteAdminLead
+      tags: [admin]
+      summary: Delete a lead
+      security:
+        - clerkSession: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          description: Lead deleted
+  /storage/uploads/request-url:
+    post:
+      operationId: requestUploadUrl
+      tags: [storage]
+      summary: Request a presigned upload URL
+      security:
+        - clerkSession: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadRequest"
+      responses:
+        "200":
+          description: Upload destination
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadResponse"
+components:
+  securitySchemes:
+    clerkSession:
+      type: http
+      scheme: bearer
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+      required: [error]
+    SiteContent:
+      type: object
+      properties:
+        heroTitle: { type: string }
+        heroDescription: { type: string }
+        primaryCta: { type: string }
+        secondaryCta: { type: string }
+        featuresTitle: { type: string }
+        howTitle: { type: string }
+        workTitle: { type: string }
+        pricingTitle: { type: string }
+        whyTitle: { type: string }
+        finalCta: { type: string }
+        finalCtaButton: { type: string }
+      required: [heroTitle, heroDescription, primaryCta, secondaryCta, featuresTitle, howTitle, workTitle, pricingTitle, whyTitle, finalCta, finalCtaButton]
+    SiteContentUpdate:
+      type: object
+      properties:
+        heroTitle: { type: string, minLength: 1 }
+        heroDescription: { type: string, minLength: 1 }
+        primaryCta: { type: string, minLength: 1 }
+        secondaryCta: { type: string, minLength: 1 }
+        featuresTitle: { type: string, minLength: 1 }
+        howTitle: { type: string, minLength: 1 }
+        workTitle: { type: string, minLength: 1 }
+        pricingTitle: { type: string, minLength: 1 }
+        whyTitle: { type: string, minLength: 1 }
+        finalCta: { type: string, minLength: 1 }
+        finalCtaButton: { type: string, minLength: 1 }
+    Feature:
+      type: object
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        description: { type: string }
+        icon: { type: string }
+        sortOrder: { type: integer }
+        active: { type: boolean }
+      required: [id, title, description, icon, sortOrder, active]
+    PublicSite:
+      type: object
+      properties:
+        content: { $ref: "#/components/schemas/SiteContent" }
+        features:
+          type: array
+          items: { $ref: "#/components/schemas/Feature" }
+        contact:
+          $ref: "#/components/schemas/ContactSettings"
+        notifications:
+          type: array
+          items: { $ref: "#/components/schemas/Notification" }
+        media:
+          type: array
+          items: { $ref: "#/components/schemas/SiteMedia" }
+        marketingOrderCounter:
+          $ref: "#/components/schemas/PublicMarketingOrderCounter"
+      required: [content, features, contact, notifications, media, marketingOrderCounter]
+    ContactSettings:
+      type: object
+      properties:
+        whatsapp: { type: string }
+        email: { type: string }
+        instagram: { type: string }
+        twitter: { type: string }
+        tiktok: { type: string }
+      required: [whatsapp, email, instagram, twitter, tiktok]
+    ContactSettingsUpdate:
+      type: object
+      properties:
+        whatsapp: { type: string, minLength: 7 }
+        email: { type: string, format: email }
+        instagram: { type: string }
+        twitter: { type: string }
+        tiktok: { type: string }
+    Notification:
+      type: object
+      properties:
+        id: { type: integer }
+        title: { type: string }
+        message: { type: string }
+        linkText: { type: string }
+        linkUrl: { type: string }
+        active: { type: boolean }
+        sortOrder: { type: integer }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+      required: [id, title, message, linkText, linkUrl, active, sortOrder, createdAt, updatedAt]
+    NotificationInput:
+      type: object
+      properties:
+        title: { type: string, minLength: 1 }
+        message: { type: string, minLength: 1 }
+        linkText: { type: string }
+        linkUrl: { type: string }
+        active: { type: boolean }
+        sortOrder: { type: integer }
+      required: [title, message, linkText, linkUrl, active, sortOrder]
+    NotificationUpdate:
+      type: object
+      properties:
+        title: { type: string, minLength: 1 }
+        message: { type: string, minLength: 1 }
+        linkText: { type: string }
+        linkUrl: { type: string }
+        active: { type: boolean }
+        sortOrder: { type: integer }
+    SiteMedia:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        mediaPath: { type: string }
+        altText: { type: string }
+        placement: { type: string }
+        active: { type: boolean }
+        sortOrder: { type: integer }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+      required: [id, name, mediaPath, altText, placement, active, sortOrder, createdAt, updatedAt]
+    SiteMediaInput:
+      type: object
+      properties:
+        name: { type: string, minLength: 1 }
+        mediaPath: { type: string, minLength: 1 }
+        altText: { type: string }
+        placement: { type: string, minLength: 1 }
+        active: { type: boolean }
+        sortOrder: { type: integer }
+      required: [name, mediaPath, altText, placement, active, sortOrder]
+    SiteMediaUpdate:
+      type: object
+      properties:
+        name: { type: string, minLength: 1 }
+        mediaPath: { type: string, minLength: 1 }
+        altText: { type: string }
+        placement: { type: string, minLength: 1 }
+        active: { type: boolean }
+        sortOrder: { type: integer }
+    MarketingOrderCounter:
+      type: object
+      properties:
+        id: { type: integer }
+        currentValue: { type: integer, minimum: 0 }
+        displayedValue: { type: integer, minimum: 0 }
+        minDailyIncrease: { type: integer, minimum: 0 }
+        maxDailyIncrease: { type: integer, minimum: 0 }
+        dailyIncrease: { type: integer, minimum: 0 }
+        enabled: { type: boolean }
+        cycleStartedAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+      required: [id, currentValue, displayedValue, minDailyIncrease, maxDailyIncrease, dailyIncrease, enabled, cycleStartedAt, updatedAt]
+    PublicMarketingOrderCounter:
+      type: object
+      properties:
+        displayedValue: { type: integer, minimum: 0 }
+        enabled: { type: boolean }
+      required: [displayedValue, enabled]
+    MarketingOrderCounterUpdate:
+      type: object
+      properties:
+        currentValue: { type: integer, minimum: 0 }
+        minDailyIncrease: { type: integer, minimum: 0 }
+        maxDailyIncrease: { type: integer, minimum: 0 }
+        enabled: { type: boolean }
+        resetDailyCycle: { type: boolean }
+      required: [currentValue, minDailyIncrease, maxDailyIncrease, enabled]
+    PricingPlan:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        price: { type: number }
+        currency: { type: string }
+        billingPeriod: { type: string }
+        description: { type: string }
+        features:
+          type: array
+          items: { type: string }
+        recommended: { type: boolean }
+        active: { type: boolean }
+        sortOrder: { type: integer }
+      required: [id, name, price, currency, billingPeriod, description, features, recommended, active, sortOrder]
+    PricingPlanInput:
+      type: object
+      properties:
+        name: { type: string, minLength: 1 }
+        price: { type: number, minimum: 0 }
+        currency: { type: string, minLength: 1 }
+        billingPeriod: { type: string, minLength: 1 }
+        description: { type: string }
+        features: { type: array, items: { type: string } }
+        recommended: { type: boolean }
+        active: { type: boolean }
+        sortOrder: { type: integer }
+      required: [name, price, currency, billingPeriod, description, features, recommended, active, sortOrder]
+    PricingPlanUpdate:
+      type: object
+      properties:
+        name: { type: string, minLength: 1 }
+        price: { type: number, minimum: 0 }
+        currency: { type: string, minLength: 1 }
+        billingPeriod: { type: string, minLength: 1 }
+        description: { type: string }
+        features: { type: array, items: { type: string } }
+        recommended: { type: boolean }
+        active: { type: boolean }
+        sortOrder: { type: integer }
+    RestaurantLogo:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        logoPath: { type: string }
+        active: { type: boolean }
+        sortOrder: { type: integer }
+      required: [id, name, logoPath, active, sortOrder]
+    RestaurantLogoInput:
+      type: object
+      properties:
+        name: { type: string, minLength: 1 }
+        logoPath: { type: string, minLength: 1 }
+        active: { type: boolean }
+        sortOrder: { type: integer }
+      required: [name, logoPath, active, sortOrder]
+    RestaurantLogoUpdate:
+      type: object
+      properties:
+        name: { type: string, minLength: 1 }
+        logoPath: { type: string, minLength: 1 }
+        active: { type: boolean }
+        sortOrder: { type: integer }
+    LeadStatus:
+      type: string
+      enum: [New, Contacted, "In Progress", Completed, Cancelled]
+    Lead:
+      type: object
+      properties:
+        id: { type: integer }
+        restaurantName: { type: string }
+        customerName: { type: string }
+        phone: { type: string }
+        whatsapp: { type: string }
+        email: { type: string }
+        city: { type: string }
+        branches: { type: integer }
+        businessType: { type: string }
+        packageName: { type: string }
+        notes: { type: string }
+        status: { $ref: "#/components/schemas/LeadStatus" }
+        createdAt: { type: string, format: date-time }
+      required: [id, restaurantName, customerName, phone, whatsapp, email, city, branches, businessType, packageName, notes, status, createdAt]
+    LeadInput:
+      type: object
+      properties:
+        restaurantName: { type: string, minLength: 2 }
+        customerName: { type: string, minLength: 2 }
+        phone: { type: string, minLength: 7 }
+        whatsapp: { type: string, minLength: 7 }
+        email: { type: string, format: email }
+        city: { type: string, minLength: 2 }
+        branches: { type: integer, minimum: 1 }
+        businessType: { type: string, minLength: 2 }
+        packageName: { type: string, minLength: 1 }
+        notes: { type: string }
+      required: [restaurantName, customerName, phone, whatsapp, email, city, branches, businessType, packageName, notes]
+    LeadUpdate:
+      type: object
+      properties:
+        status: { $ref: "#/components/schemas/LeadStatus" }
+    AdminOverview:
+      type: object
+      properties:
+        total: { type: integer }
+        new: { type: integer }
+        contacted: { type: integer }
+        inProgress: { type: integer }
+        completed: { type: integer }
+        cancelled: { type: integer }
+      required: [total, new, contacted, inProgress, completed, cancelled]
+    AdminUnlockInput:
+      type: object
+      properties:
+        code: { type: string, minLength: 1 }
+      required: [code]
+    AdminAccessStatus:
+      type: object
+      properties:
+        unlocked: { type: boolean }
+      required: [unlocked]
+    UploadRequest:
+      type: object
+      properties:
+        name: { type: string, minLength: 1 }
+        size: { type: integer, minimum: 1 }
+        contentType: { type: string, enum: [image/png, image/jpeg, image/webp, image/svg+xml] }
+      required: [name, size, contentType]
+    UploadResponse:
+      type: object
+      properties:
+        uploadURL: { type: string, format: uri }
+        objectPath: { type: string }
+      required: [uploadURL, objectPath]
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+
