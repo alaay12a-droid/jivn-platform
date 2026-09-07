@@ -1,0 +1,6 @@
+- [Clerk package alignment](clerk-version-alignment.md) — keep Clerk React and shared packages compatible or Vite can fail before the app loads.
+- [Marketing counter cadence](marketing-counter-cadence.md) — persist the baseline and daily cadence, but expose only the public displayed value and enabled state.
+- [Private admin access](private-admin-access.md) — keep the admin entry hidden and verify its unlock code only on the server.
+- [Admin session cache quirks](admin-session-cache-quirks.md) — prevent 304 API responses and scope the unlock cookie for artifact-mounted paths.
+- [Wouter query routing](wouter-query-routing.md) — use `useSearch()` for query parameters; `useLocation()` only provides the pathname.
+- [GitHub upload WAF](github-upload-waf.md) — repeated Git Data API writes can trigger temporary Cloudflare blocking; verify the branch after each attempt.
