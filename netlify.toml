@@ -2,6 +2,9 @@
   command = "pnpm --filter @workspace/jivn-website... run build"
   publish = "artifacts/jivn-website/dist/public"
 
+[context.production.environment]
+  VITE_CLERK_PROXY_URL = "/api/__clerk"
+
 [[redirects]]
   from = "/api/*"
   to = "https://chvn-mn-s-t-tbyqt-lm-taam.replit.app/api/:splat"
