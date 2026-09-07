@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "چڤن — منصة تطبيقات المطاعم"
+description = "موقع عربي RTL فاخر لشركة چڤن لتصميم وتطوير تطبيقات المطاعم، مع نموذج عملاء ولوحة إدارة للباقات والشعارات والعملاء والمحتوى."
+version = "1.0.0"
+id = "artifacts/jivn-website"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 22901
+
+[services.development]
+run = "pnpm --filter @workspace/jivn-website run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/jivn-website", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/jivn-website/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22901"
+BASE_PATH = "/"
