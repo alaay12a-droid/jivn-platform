@@ -34,13 +34,13 @@ async function seedDefaults() {
   const features = await db.select({ id: featureTable.id }).from(featureTable).limit(1);
   if (!features[0]) {
     await db.insert(featureTable).values([
-      { title: "تصميم يليق بهويتك", description: "واجهة تحمل اسم مطعمك وتفاصيله", icon: "sparkles", sortOrder: 1, active: true },
-      { title: "قائمة رقمية ذكية", description: "منيو سهل التصفح والتحديث", icon: "menu", sortOrder: 2, active: true },
-      { title: "استقبال الطلبات", description: "طلبات مباشرة دون وسيط", icon: "shopping-bag", sortOrder: 3, active: true },
-      { title: "إشعارات فورية", description: "ابقَ قريبًا من عملائك دائمًا", icon: "bell", sortOrder: 4, active: true },
-      { title: "سريع وسلس", description: "تجربة مصممة للاستخدام اليومي", icon: "zap", sortOrder: 5, active: true },
-      { title: "جاهز للنشر", description: "نجهز تطبيقك للمتاجر", icon: "rocket", sortOrder: 6, active: true },
-    ]);
+      { title: "هوية تليق بمطعمك", description: "تصميم يحمل شخصية مطعمك ويجعل التجربة مألوفة من أول لمسة.", icon: "sparkles", sortOrder: 1, active: true },
+      { title: "منيو إلكتروني على الآيباد", description: "شاشة واضحة داخل المطعم لعرض الصور والأسعار وتحديثها بسهولة.", icon: "tablet", sortOrder: 2, active: true },
+      { title: "نقطة بيع للمطعم", description: "استقبال الطلبات من الكاشير وتوجيهها بسلاسة إلى المطبخ والصالة.", icon: "store", sortOrder: 3, active: true },
+      { title: "محاسبة وتقارير أوضح", description: "تابع المبيعات والفواتير وإغلاق اليوم من لوحة واحدة.", icon: "calculator", sortOrder: 4, active: true },
+      { title: "طلبات وإشعارات فورية", description: "ابقَ قريبًا من عملائك ووصل الطلبات والتنبيهات في وقتها.", icon: "bell", sortOrder: 5, active: true },
+      { title: "جاهز للنشر والتطوير", description: "نجهز تطبيقك للمتاجر ونبقى معك بعد الإطلاق.", icon: "rocket", sortOrder: 6, active: true },
+    ]).onConflictDoNothing({ target: featureTable.title });
   }
   const pricing = await db.select({ id: pricingPlansTable.id }).from(pricingPlansTable).limit(1);
   if (!pricing[0]) {
@@ -91,9 +91,9 @@ async function seedDefaults() {
   const logos = await db.select({ id: restaurantLogosTable.id }).from(restaurantLogosTable).limit(1);
   if (!logos[0]) {
     await db.insert(restaurantLogosTable).values([
-      { name: "مطعم محلي", logoPath: "", active: true, sortOrder: 1 },
-      { name: "شريكنا القادم", logoPath: "", active: true, sortOrder: 2 },
-    ]);
+      { name: "مطعم محلي", logoPath: "", appDownloadUrl: "", active: true, sortOrder: 1 },
+      { name: "شريكنا القادم", logoPath: "", appDownloadUrl: "", active: true, sortOrder: 2 },
+    ]).onConflictDoNothing({ target: restaurantLogosTable.name });
   }
   await db.update(siteContentTable).set({ updatedAt: new Date() }).where(eq(siteContentTable.id, content?.id ?? 1));
   seeded = true;

@@ -830,22 +830,25 @@ components:
         id: { type: integer }
         name: { type: string }
         logoPath: { type: string }
+        appDownloadUrl: { type: string }
         active: { type: boolean }
         sortOrder: { type: integer }
-      required: [id, name, logoPath, active, sortOrder]
+      required: [id, name, logoPath, appDownloadUrl, active, sortOrder]
     RestaurantLogoInput:
       type: object
       properties:
         name: { type: string, minLength: 1 }
         logoPath: { type: string, minLength: 1 }
+        appDownloadUrl: { type: string }
         active: { type: boolean }
         sortOrder: { type: integer }
-      required: [name, logoPath, active, sortOrder]
+      required: [name, logoPath, appDownloadUrl, active, sortOrder]
     RestaurantLogoUpdate:
       type: object
       properties:
         name: { type: string, minLength: 1 }
         logoPath: { type: string, minLength: 1 }
+        appDownloadUrl: { type: string }
         active: { type: boolean }
         sortOrder: { type: integer }
     LeadStatus:

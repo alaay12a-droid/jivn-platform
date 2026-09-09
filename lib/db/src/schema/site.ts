@@ -1,4 +1,4 @@
-import { boolean, integer, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { boolean, integer, pgTable, serial, text, timestamp, uniqueIndex } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -25,7 +25,7 @@ export const featureTable = pgTable("features", {
   icon: text("icon").notNull(),
   sortOrder: integer("sort_order").notNull().default(0),
   active: boolean("active").notNull().default(true),
-});
+}, (table) => [uniqueIndex("features_title_unique").on(table.title)]);
 
 export const contactSettingsTable = pgTable("contact_settings", {
   id: serial("id").primaryKey(),

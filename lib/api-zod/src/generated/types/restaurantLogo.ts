@@ -10,6 +10,7 @@ export interface RestaurantLogo {
   id: number;
   name: string;
   logoPath: string;
+  appDownloadUrl: string;
   active: boolean;
   sortOrder: number;
 }

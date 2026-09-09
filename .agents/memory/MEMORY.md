@@ -4,3 +4,7 @@
 - [Admin session cache quirks](admin-session-cache-quirks.md) — prevent 304 API responses and scope the unlock cookie for artifact-mounted paths.
 - [Wouter query routing](wouter-query-routing.md) — use `useSearch()` for query parameters; `useLocation()` only provides the pathname.
 - [GitHub upload WAF](github-upload-waf.md) — repeated Git Data API writes can trigger temporary Cloudflare blocking; verify the branch after each attempt.
+- [Netlify Clerk build environment](netlify-clerk-build-environment.md) — static Netlify builds need the Clerk publishable variable injected or Clerk falls back to a host proxy.
+- [Netlify Clerk asset redirects](netlify-clerk-asset-redirects.md) — external Netlify rewrites can redirect versionless Clerk JS assets to the backend hostname and block Clerk bootstrap.
+- [Optional restaurant links](restaurant-download-link-schema.md) — legacy restaurant records use an empty download URL, so update validation must accept empty strings.
+- [Idempotent seed data](idempotent-seed-data.md) — startup seeding can race across services, so seeded labels need unique constraints and conflict-safe inserts.

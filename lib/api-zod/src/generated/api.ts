@@ -107,6 +107,7 @@ export const GetPublicRestaurantsResponseItem = zod.object({
   "id": zod.number().int(),
   "name": zod.string(),
   "logoPath": zod.string(),
+  "appDownloadUrl": zod.string(),
   "active": zod.boolean(),
   "sortOrder": zod.number().int()
 })
@@ -666,6 +667,7 @@ export const GetAdminRestaurantsResponseItem = zod.object({
   "id": zod.number().int(),
   "name": zod.string(),
   "logoPath": zod.string(),
+  "appDownloadUrl": zod.string(),
   "active": zod.boolean(),
   "sortOrder": zod.number().int()
 })
@@ -682,6 +684,7 @@ export const GetAdminRestaurantsResponse = zod.array(GetAdminRestaurantsResponse
 export const CreateAdminRestaurantBody = zod.object({
   "name": zod.string().min(1),
   "logoPath": zod.string().min(1),
+  "appDownloadUrl": zod.string(),
   "active": zod.boolean(),
   "sortOrder": zod.number().int()
 })
@@ -690,6 +693,7 @@ export const CreateAdminRestaurantResponse = zod.object({
   "id": zod.number().int(),
   "name": zod.string(),
   "logoPath": zod.string(),
+  "appDownloadUrl": zod.string(),
   "active": zod.boolean(),
   "sortOrder": zod.number().int()
 })
@@ -709,6 +713,7 @@ export const UpdateAdminRestaurantParams = zod.object({
 export const UpdateAdminRestaurantBody = zod.object({
   "name": zod.string().min(1).optional(),
   "logoPath": zod.string().min(1).optional(),
+  "appDownloadUrl": zod.string().optional(),
   "active": zod.boolean().optional(),
   "sortOrder": zod.number().int().optional()
 })
@@ -717,6 +722,7 @@ export const UpdateAdminRestaurantResponse = zod.object({
   "id": zod.number().int(),
   "name": zod.string(),
   "logoPath": zod.string(),
+  "appDownloadUrl": zod.string(),
   "active": zod.boolean(),
   "sortOrder": zod.number().int()
 })

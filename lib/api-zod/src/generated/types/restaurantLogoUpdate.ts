@@ -11,6 +11,7 @@ export interface RestaurantLogoUpdate {
   name?: string;
   /** @minLength 1 */
   logoPath?: string;
+  appDownloadUrl?: string;
   active?: boolean;
   sortOrder?: number;
 }

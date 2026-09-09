@@ -240,6 +240,7 @@ export interface RestaurantLogo {
   id: number;
   name: string;
   logoPath: string;
+  appDownloadUrl: string;
   active: boolean;
   sortOrder: number;
 }
@@ -249,6 +250,7 @@ export interface RestaurantLogoInput {
   name: string;
   /** @minLength 1 */
   logoPath: string;
+  appDownloadUrl: string;
   active: boolean;
   sortOrder: number;
 }
@@ -258,6 +260,7 @@ export interface RestaurantLogoUpdate {
   name?: string;
   /** @minLength 1 */
   logoPath?: string;
+  appDownloadUrl?: string;
   active?: boolean;
   sortOrder?: number;
 }
